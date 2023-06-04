@@ -25,7 +25,30 @@ const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
 
 
 const Navbar = () => {
-    const { activeMenu, setActiveMenu, isClicked, setIsClicked, handleClick } = useStateContext();
+  const { activeMenu, setActiveMenu, isClicked, setIsClicked, handleClick, screenSize, setScreenSize } = useStateContext();
+
+  useEffect(() => {
+      const handleResize = () => setScreenSize(window.innerWidth);
+
+      window.addEventListener('resize',handleResize);
+
+      handleResize();
+
+      return () => window.removeEventListener('resize', handleResize);
+
+  }, []);
+
+  useEffect(() => {
+    if(screenSize <= 900)
+    {
+      setActiveMenu(false);
+    }
+    else
+    {
+      setActiveMenu(true);
+    }
+
+  }, [screenSize]);
 
   return (
     <div className="flex justify-between p-2 md:mx-6 relative">
@@ -48,9 +71,9 @@ const Navbar = () => {
         icon={<BsChatLeft />} 
       />
       <NavButton 
-        title="Notifications" 
+        title="Notification" 
         dotColor="#03C9D7"
-        customFunc={() => handleClick('notifications')} 
+        customFunc={() => handleClick('notification')} 
         color="blue" 
         icon={<RiNotification3Line />} 
       />
@@ -58,12 +81,13 @@ const Navbar = () => {
         content = "Profile"
         position="BottomCenter"
       >
-        <div className=" felx items-center gap-2 cursor-pointer p-1 hover:bg-light-light-gray rounded-lg"
+        <div className=" flex items-center gap-2 cursor-pointer p-1 hover:bg-light-light-gray rounded-lg"
         onClick={() => handleClick('userProfile')}>
 
           <img
               className="rounded-full w-8 h-8"
               src={avatar}
+              alt="user-profile"
           />
           <p>
             <span className="text-gray-400"> Hi, </span> {' '}
@@ -75,12 +99,12 @@ const Navbar = () => {
       </TooltipComponent>
 
       {isClicked.cart && (<Cart />)}
-      {isClicked.chat && <Chat />}
-      {isClicked.notification && <Notification />}
+      {isClicked.chat && (<Chat />)}
+      {isClicked.notification && (<Notification />)}
       {isClicked.UserProfile && (<UserProfile />)}
     
     </div>
-
+ 
 
     </div>
 
